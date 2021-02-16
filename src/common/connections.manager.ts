@@ -8,7 +8,7 @@ export class ConnectionsManager {
     this.connection = await createConnection(
       {
         ...config.get('mysql'),
-        entities: [`${__dirname}/../models/*.{js,ts}`],
+        entities: [`${__dirname}/../**/*.model.{js,ts}`],
       }
     );
   }

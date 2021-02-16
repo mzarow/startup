@@ -11,12 +11,14 @@
     "lint": "eslint . --ext .ts",
     "start": "yarn run compile && node build/src/index.js",
     "start-dev": "nodemon src/index.ts",
-    "unit-tests": "yarn run compile && mocha './build/src/**/*.spec.js'"
+    "unit-tests": "yarn run compile && mocha './build/src/**/*.spec.js'",
+    "migrate": "yarn compile && typeorm migration:run --config ./ormconfig.migrations.js"
   },
   "dependencies": {
     "class-transformer": "^0.3.1",
     "class-validator": "^0.12.2",
     "express": "^4.17.1",
+    "http-status-codes": "^2.1.4",
     "mysql": "^2.18.1",
     "nconf": "^0.11.2",
     "reflect-metadata": "^0.1.13",

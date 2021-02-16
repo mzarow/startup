@@ -1,12 +1,12 @@
 import 'reflect-metadata';
-import { Application } from 'express';
+import {Application} from 'express';
 import * as express from 'express';
-import { Container } from 'typedi';
-import { useContainer as routingUseContainer, useExpressServer } from 'routing-controllers';
-import { useContainer as ormUseContainer } from 'typeorm';
-import { Server } from 'http';
+import {Container} from 'typedi';
+import {useContainer as routingUseContainer, useExpressServer} from 'routing-controllers';
+import {useContainer as ormUseContainer} from 'typeorm';
+import {Server} from 'http';
 import * as config from 'nconf';
-import { manager as dbConnectionsManager } from "./common/connections.manager";
+import {manager as dbConnectionsManager} from "./common/connections.manager";
 
 export class App {
   private app: Application;
@@ -22,8 +22,8 @@ export class App {
 
     this.app = useExpressServer(express(),  {
       routePrefix: '/api',
-      controllers: [`${__dirname}/controllers/*.{js,ts}`],
-      middlewares: [`${__dirname}/middlewares/*.{js,ts}`],
+      controllers: [`${__dirname}/**/*.controller.{js,ts}`],
+      middlewares: [`${__dirname}/**/*.middleware.{js,ts}`],
     });
 
     const port = +config.get('port');
@@ -39,7 +39,7 @@ export class App {
   }
 
   private bootstrap(): void {
-    const env = 'default';
+    const env = process.env.SDH_ENV || 'default';
     const file = `${process.cwd()}/config/${env}.json`;
 
     config.file(env, { file });

@@ -1,0 +1,49 @@
+{
+  "name": "zombie",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "mzarow",
+  "license": "ISC",
+  "scripts": {
+    "compile": "tsc",
+    "lint": "eslint . --ext .ts",
+    "start": "yarn run compile && node build/src/index.js",
+    "start-dev": "nodemon src/index.ts",
+    "unit-tests": "yarn run compile && mocha './build/src/**/*.spec.js'"
+  },
+  "dependencies": {
+    "class-transformer": "^0.3.1",
+    "class-validator": "^0.12.2",
+    "express": "^4.17.1",
+    "mysql": "^2.18.1",
+    "nconf": "^0.11.2",
+    "reflect-metadata": "^0.1.13",
+    "routing-controllers": "^0.9.0",
+    "typedi": "^0.8.0",
+    "typeorm": "^0.2.31",
+    "typeorm-typedi-extensions": "^0.2.3"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.11",
+    "@types/chai-as-promised": "^7.1.0",
+    "@types/express": "^4.17.11",
+    "@types/mocha": "^7.0.2",
+    "@types/nconf": "^0.10.0",
+    "@types/node": "^13.13.0",
+    "@types/sinon": "^9.0.0",
+    "@types/sinon-chai": "^3.2.4",
+    "@typescript-eslint/eslint-plugin": "^4.4.0",
+    "@typescript-eslint/parser": "^4.4.0",
+    "chai": "^4.3.0",
+    "chai-as-promised": "^7.1.1",
+    "eslint": "^7.10.0",
+    "mocha": "^8.3.0",
+    "nodemon": "^2.0.7",
+    "sinon": "^9.2.4",
+    "sinon-chai": "^3.5.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.5"
+  }
+}

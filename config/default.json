@@ -1,0 +1,17 @@
+{
+  "name": "mzarow-zombie",
+  "port": 3000,
+  "mysql": {
+    "type": "mysql",
+    "host" : "0.0.0.0",
+    "port": 3306,
+    "username": "rower",
+    "password": "rower",
+    "database": "sdh_project",
+    "charset": "UTF8_GENERAL_CI"
+  },
+  "winston": {
+    "filename": "./logs/error.log",
+    "level": "info"
+  }
+}

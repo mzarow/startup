@@ -7,6 +7,7 @@ import {useContainer as ormUseContainer} from 'typeorm';
 import {Server} from 'http';
 import * as config from 'nconf';
 import {manager as dbConnectionsManager} from "./common/connections.manager";
+import {cronJobsManager} from "./common/cron-jobs.manager";
 
 export class App {
   private app: Application;
@@ -19,6 +20,8 @@ export class App {
     this.bootstrap();
 
     await dbConnectionsManager.create();
+
+    cronJobsManager.registerJobs();
 
     this.app = useExpressServer(express(),  {
       routePrefix: '/api',

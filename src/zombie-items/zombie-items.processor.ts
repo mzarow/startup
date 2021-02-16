@@ -38,7 +38,10 @@ export class ZombieItemsProcessorImpl implements ZombieItemsProcessor {
       const response = await axios.get(zombieItemsUrl);
       data = response.data;
     } catch (err) {
-      // retry in 5 minutes
+      const retryIntervalInMinutes = 5;
+      console.error(`Items processor: external API failure ${err.message}. Retrying in ${retryIntervalInMinutes} minutes.`);
+      this.scheduleProcessing(retryIntervalInMinutes);
+      return;
     }
 
     if (data.items.length === 0 || data.timestamp === this.lastTimestamp) {
@@ -52,5 +55,13 @@ export class ZombieItemsProcessorImpl implements ZombieItemsProcessor {
     const zombieItems: ZombieItem[] = zombieItemsDto.map(dto => this.zombieItemMapper.fromDtoToDomain(dto));
 
     await this.zombieItemRepository.save(zombieItems);
+
+    console.log('Items processor: items updated');
+  }
+
+  private scheduleProcessing(minutes: number): void {
+    setTimeout(() => {
+      this.processItemsFromExchange();
+    }, minutes * 1000 * 60);
   }
 }

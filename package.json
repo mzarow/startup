@@ -15,6 +15,7 @@
     "migrate": "yarn compile && typeorm migration:run --config ./ormconfig.migrations.js"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "class-transformer": "^0.3.1",
     "class-validator": "^0.12.2",
     "express": "^4.17.1",

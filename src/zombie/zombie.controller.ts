@@ -19,7 +19,6 @@ export class ZombieController {
   @Get()
   public async getAll(): Promise<ZombieDto[]> {
     const zombies = await this.zombieService.listAll();
-    console.log(zombies);
 
     return zombies.map((zombie: Zombie) => this.zombieMapper.fromDomainToDto(zombie));
   }

@@ -10,6 +10,7 @@ export class ZombieMapperImpl implements ZombieMapper {
   fromDomainToDto(domain: Zombie): ZombieDto {
     const dto = new ZombieDto();
     dto.name = domain.name;
+    dto.created = domain.created;
 
     return dto;
   }

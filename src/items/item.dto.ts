@@ -1,6 +1,6 @@
 import {IsInt, IsNotEmpty, IsNumber, IsString} from "class-validator";
 
-export class ZombieItemDto {
+export class ItemDto {
   @IsInt()
   public id: number;
 

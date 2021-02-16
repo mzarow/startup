@@ -5,4 +5,6 @@ export class ZombieDto {
   @MinLength(3)
   @MaxLength(100)
   public name: string;
+
+  public created?: Date;
 }

@@ -5,6 +5,8 @@ import {ZombieDto} from "./zombie.dto";
 import {ZombieMapper, ZombieMapperImpl} from "./zombie.mapper";
 import {Zombie} from "./zombie.model";
 import {StatusCodes} from 'http-status-codes';
+import {ItemDto} from "../items/item.dto";
+import {ItemMapper, ItemMapperImpl} from "../items/item.mapper";
 
 @JsonController('/zombies')
 export class ZombieController {
@@ -13,7 +15,9 @@ export class ZombieController {
     @Inject(() => ZombieServiceImpl)
     private readonly zombieService: ZombieService,
     @Inject(() => ZombieMapperImpl)
-    private readonly zombieMapper: ZombieMapper
+    private readonly zombieMapper: ZombieMapper,
+    @Inject(() => ItemMapperImpl)
+    private readonly itemMapper: ItemMapper
   ) {}
 
   @Get()
@@ -56,5 +60,42 @@ export class ZombieController {
     await this.zombieService.delete(id);
 
     return null;
+  }
+
+  @Get('/:id/items')
+  public async getItems(@Param('id') id: number): Promise<ItemDto[]> {
+    const zombie = await this.zombieService.findOne(id, true);
+
+    if (!zombie) {
+      throw new NotFoundError('Zombie not found');
+    }
+
+    return zombie.items.map(item => this.itemMapper.fromDomainToDto(item));
+  }
+
+  @Post('/:id/items')
+  public async addItem(@Param('id') id: number, @Body() body: {itemId: number}): Promise<ItemDto[]> {
+    const zombie = await this.zombieService.findOne(id, true);
+
+    if (!zombie) {
+      throw new NotFoundError('Zombie not found');
+    }
+
+    const items = await this.zombieService.addItemToZombie(zombie, body.itemId);
+
+    return items.map(item => this.itemMapper.fromDomainToDto(item));
+  }
+
+  @Delete('/:id/items/:itemId')
+  public async removeItem(@Param('id') id: number, @Param('itemId') itemId: number): Promise<ItemDto[]> {
+    const zombie = await this.zombieService.findOne(id, true);
+
+    if (!zombie) {
+      throw new NotFoundError('Zombie not found');
+    }
+
+    const items = await this.zombieService.removeItemFromZombie(zombie, itemId);
+
+    return items.map(item => this.itemMapper.fromDomainToDto(item));
   }
 }

@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner, Table} from "typeorm";
-import {TABLE_NAME} from "../zombie-items/zombie-item.model";
+import {TABLE_NAME} from "../items/item.model";
 
-export class ZombieItems1613493923571 implements MigrationInterface {
+export class Items1613493923571 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(new Table({
@@ -31,7 +31,7 @@ export class ZombieItems1613493923571 implements MigrationInterface {
       name: TABLE_NAME,
       uniques: [{
         columnNames: ['name'],
-        name: 'zombie_item_name_unique'
+        name: 'item_name_unique'
       }]
     }), true, true, true);
   }

@@ -13,7 +13,7 @@ export class App {
   private app: Application;
   private server: Server;
 
-  public async start() {
+  public async start(): Promise<void> {
     ormUseContainer(Container);
     routingUseContainer(Container);
 
@@ -36,7 +36,7 @@ export class App {
     console.log(`Server started listening on port ${port}`);
   }
 
-  public async stop() {
+  public async stop(): Promise<void> {
     await dbConnectionsManager.close();
     await this.server.close();
   }

@@ -1,19 +1,21 @@
 import {Container} from "typedi";
-import {ZombieItemsProcessorImpl} from "../zombie-items/zombie-items.processor";
+import {ExternalItemsProcessor, ExternalItemsProcessorImpl} from "../items/external-items.processor";
 import {CronJob} from 'cron';
 
 interface CronJobDefinition {
   handler: () => void;
   schedule: string;
+  timeZone: string;
 }
 
 export const CRON_JOBS: CronJobDefinition[] = [
   {
     handler: async () => {
-      const zombieItemsProcessor = Container.get(ZombieItemsProcessorImpl);
-      await zombieItemsProcessor.processItemsFromExchange();
+      const externalItemsProcessor: ExternalItemsProcessor = Container.get(ExternalItemsProcessorImpl);
+      await externalItemsProcessor.processItemsFromExchange();
     },
-    schedule: '1 0 * * *' // minute after 00:00
+    schedule: '1 0 * * *', // minute after 00:00
+    timeZone: 'UTC'
   }
 ];
 
@@ -26,7 +28,7 @@ export class CronJobsManager {
         jobDefinition.handler,
         null,
         true,
-        'UTC');
+        jobDefinition.timeZone);
       job.start();
     });
   }

@@ -23,13 +23,13 @@ export class ZombieItemsJoinTable1613510069869 implements MigrationInterface {
         type: 'integer',
       }],
       foreignKeys: [{
-        columnNames: ['zombieId'],
+        columnNames: ['zombiesId'],
         name: 'fk_zombie_items',
         onDelete: 'CASCADE',
         referencedColumnNames: ['id'],
         referencedTableName: ZOMBIE_TABLE_NAME
       }, {
-        columnNames: ['itemId'],
+        columnNames: ['itemsId'],
         name: 'fk_items_zombie',
         onDelete: 'CASCADE',
         referencedColumnNames: ['id'],
@@ -37,7 +37,7 @@ export class ZombieItemsJoinTable1613510069869 implements MigrationInterface {
       }],
       name: this.tableName,
       uniques: [{
-        columnNames: ['zombieId', 'itemId'],
+        columnNames: ['zombiesId', 'itemsId'],
         name: 'zombieId_itemId_unique'
       }]
     }), true, true, true);

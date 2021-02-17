@@ -10,7 +10,7 @@
     "compile": "tsc",
     "lint": "eslint . --ext .ts",
     "start": "yarn run compile && node build/src/index.js",
-    "start-dev": "nodemon src/index.ts",
+    "start-dev": "yarn migrate && nodemon src/index.ts",
     "unit-tests": "yarn run compile && mocha './build/src/**/*.spec.js'",
     "migrate": "yarn compile && typeorm migration:run --config ./ormconfig.migrations.js",
     "migrateNoCompile": "typeorm migration:run --config ./ormconfig.migrations.js"

@@ -51,9 +51,9 @@ export class ZombieController {
   @Put('/:id')
   public async update(@Param('id') id: number, @Body() zombieDto: ZombieDto): Promise<ZombieDto> {
     const zombie = this.zombieMapper.fromDtoToDomain(zombieDto);
-    const createdZombie = await this.zombieService.update(id, zombie);
+    const updatedZombie = await this.zombieService.update(id, zombie);
 
-    return this.zombieMapper.fromDomainToDto(createdZombie);
+    return this.zombieMapper.fromDomainToDto(updatedZombie);
   }
 
   @Delete('/:id')

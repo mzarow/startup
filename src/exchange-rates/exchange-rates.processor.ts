@@ -9,7 +9,6 @@ import {InjectRepository} from "typeorm-typedi-extensions";
 import {Repository} from "typeorm";
 import {ExchangeRateCode} from "./exchange-rate-code.enum";
 
-
 export interface ExchangeRatesProcessor {
   processExchangeRates(autoRetry: boolean): Promise<void>;
 }
@@ -62,6 +61,8 @@ export class ExchangeRatesProcessorImpl implements ExchangeRatesProcessor {
     const exchangeRatesDto: ExchangeRateDto[] = filteredRates.map(rate => plainToClass(ExchangeRateDto, rate));
     const exchangeRates: ExchangeRate[] = exchangeRatesDto.map(dto => this.exchangeRateMapper.fromDtoToDomain(dto));
 
+    // bulk update would be better then purge && save
+    await this.exchangeRateRepository.clear();
     await this.exchangeRateRepository.save(exchangeRates);
 
     console.log('Exchange rate processor: rates updated');

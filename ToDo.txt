@@ -1,0 +1,6 @@
+to make project better:
+
+- component tests
+- api tests
+- better unit tests coverage
+- some code tweaks (already comments in the code)

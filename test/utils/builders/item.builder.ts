@@ -1,7 +1,6 @@
 import {Builder} from "./builder";
 import {Item} from "../../../src/items/item.model";
 
-
 export class ItemBuilder extends Builder<Item> {
   constructor() {
     super(new Item());

@@ -2,7 +2,6 @@ import {Zombie} from "../../../src/zombie/zombie.model";
 import {Builder} from "./builder";
 import {Item} from "../../../src/items/item.model";
 
-
 export class ZombieBuilder extends Builder<Zombie> {
   constructor() {
     super(new Zombie());
@@ -20,6 +19,11 @@ export class ZombieBuilder extends Builder<Zombie> {
 
   public withItems(items: Item[]): ZombieBuilder {
     this.entity.items = items;
+    return this;
+  }
+
+  public withCreated(created: Date): ZombieBuilder {
+    this.entity.created = created;
     return this;
   }
 }

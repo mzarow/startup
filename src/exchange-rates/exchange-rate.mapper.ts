@@ -1,9 +1,9 @@
-import {Mapper} from "../common/mapper";
+import {FromDtoToDomain} from "../common/mapper";
 import {Service} from "typedi";
 import {ExchangeRateDto} from "./exchange-rate.dto";
 import {ExchangeRate} from "./exchange-rate.model";
 
-export interface ExchangeRateMapper extends Mapper<ExchangeRateDto, ExchangeRate> {}
+export interface ExchangeRateMapper extends FromDtoToDomain<ExchangeRateDto, ExchangeRate> {}
 
 @Service()
 export class ExchangeRateMapperImpl implements ExchangeRateMapper {
@@ -14,9 +14,5 @@ export class ExchangeRateMapperImpl implements ExchangeRateMapper {
     domain.ask = dto.ask.toString();
 
     return domain;
-  }
-
-  fromDomainToDto(domain: ExchangeRate): ExchangeRateDto {
-    return new ExchangeRateDto();
   }
 }

@@ -36,7 +36,7 @@ export class ZombieServiceImpl implements ZombieService {
   }
 
   public findOne(id: number, withItems: boolean = false): Promise<Zombie> {
-    return this.zombieRepository.findOne(id, withItems ? {relations: ["items"]} : {});
+    return this.zombieRepository.findOne(id, withItems ? {relations: ['items']} : {});
   }
 
   public async create(zombie: Zombie): Promise<Zombie> {
@@ -48,10 +48,9 @@ export class ZombieServiceImpl implements ZombieService {
   public async update(id: number, zombie: Zombie): Promise<Zombie> {
     await this.validateNameUniqueness(zombie.name);
 
-    return this.zombieRepository.save({
-      id,
-      ...zombie
-    });
+    zombie.id = id;
+
+    return this.zombieRepository.save(zombie);
   }
 
   public async delete(id: number): Promise<void> {

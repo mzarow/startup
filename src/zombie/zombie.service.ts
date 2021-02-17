@@ -6,6 +6,7 @@ import {HttpError, NotFoundError} from "routing-controllers";
 import {StatusCodes} from "http-status-codes";
 import {Item} from "../items/item.model";
 import {ItemsService, ItemsServiceImpl} from "../items/items.service";
+import {ExchangeRateService, ExchangeRateServiceImpl, TotalPriceResult} from "../exchange-rates/exchange-rate.service";
 
 export interface ZombieService {
   listAll(): Promise<Zombie[]>;
@@ -15,6 +16,7 @@ export interface ZombieService {
   delete(id: number): Promise<void>;
   addItemToZombie(zombie: Zombie, itemId: number): Promise<Item[]>;
   removeItemFromZombie(zombie: Zombie, itemId: number): Promise<Item[]>;
+  getTotalItemsPriceForZombie(zombie: Zombie): Promise<TotalPriceResult[]>;
 }
 
 @Service()
@@ -24,7 +26,9 @@ export class ZombieServiceImpl implements ZombieService {
     @InjectRepository(Zombie)
     private readonly zombieRepository: Repository<Zombie>,
     @Inject(() => ItemsServiceImpl)
-    private readonly itemsService: ItemsService
+    private readonly itemsService: ItemsService,
+    @Inject(() => ExchangeRateServiceImpl)
+    private readonly exchangeRateService: ExchangeRateService,
   ) {}
 
   public listAll(): Promise<Zombie[]> {
@@ -61,6 +65,10 @@ export class ZombieServiceImpl implements ZombieService {
       throw new NotFoundError('Specified item does not exist');
     }
 
+    if (zombie.items.length >= Zombie.MAX_ITEMS_COUNT) {
+      throw new HttpError(StatusCodes.CONFLICT, 'Cannot add item - limit exceeded');
+    }
+
     const isItemAlreadyAssigned: boolean = !!(zombie.items.find(item => item.id === itemId));
 
     if (isItemAlreadyAssigned) {
@@ -94,5 +102,13 @@ export class ZombieServiceImpl implements ZombieService {
     if (exists) {
       throw new HttpError(StatusCodes.CONFLICT, 'Zombie with provided name already exists');
     }
+  }
+
+  getTotalItemsPriceForZombie(zombie: Zombie): Promise<TotalPriceResult[]> {
+    const totalPriceInPLN: number = zombie.items.reduce((acc, curr) => {
+      return acc + curr.price;
+    }, 0);
+
+    return this.exchangeRateService.getTotalPriceAllCurrencies(totalPriceInPLN);
   }
 }

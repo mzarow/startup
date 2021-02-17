@@ -1,6 +1,7 @@
 import {Container} from "typedi";
-import {ExternalItemsProcessor, ExternalItemsProcessorImpl} from "../items/external-items.processor";
+import {ItemsProcessor, ItemsProcessorImpl} from "../items/items.processor";
 import {CronJob} from 'cron';
+import {ExchangeRatesProcessor, ExchangeRatesProcessorImpl} from "../exchange-rates/exchange-rates.processor";
 
 interface CronJobDefinition {
   handler: () => void;
@@ -11,12 +12,20 @@ interface CronJobDefinition {
 export const CRON_JOBS: CronJobDefinition[] = [
   {
     handler: async () => {
-      const externalItemsProcessor: ExternalItemsProcessor = Container.get(ExternalItemsProcessorImpl);
-      await externalItemsProcessor.processItemsFromExchange();
+      const itemsProcessor: ItemsProcessor = Container.get(ItemsProcessorImpl);
+      await itemsProcessor.processItemsFromExchange(true);
     },
     schedule: '1 0 * * *', // minute after 00:00
     timeZone: 'UTC'
-  }
+  },
+  {
+    handler: async () => {
+      const exchangeRatesProcessor: ExchangeRatesProcessor = Container.get(ExchangeRatesProcessorImpl);
+      await exchangeRatesProcessor.processExchangeRates(true);
+    },
+    schedule: '1 0 * * *', // minute after 00:00
+    timeZone: 'Europe/Warsaw'
+  },
 ];
 
 export class CronJobsManager {

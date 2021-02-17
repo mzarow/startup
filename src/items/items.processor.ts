@@ -5,11 +5,11 @@ import {InjectRepository} from "typeorm-typedi-extensions";
 import {Item} from "./item.model";
 import {Repository} from "typeorm";
 import {ItemDto} from "./item.dto";
-import {ItemTransformer, ItemTransformerImpl} from "./item.transformer";
 import {ItemMapper, ItemMapperImpl} from "./item.mapper";
+import {plainToClass} from "class-transformer";
 
-export interface ExternalItemsProcessor {
-  processItemsFromExchange(): Promise<void>;
+export interface ItemsProcessor {
+  processItemsFromExchange(autoRetry: boolean): Promise<void>;
 }
 
 export interface ItemsExchangeResult {
@@ -18,19 +18,17 @@ export interface ItemsExchangeResult {
 }
 
 @Service()
-export class ExternalItemsProcessorImpl implements ExternalItemsProcessor {
+export class ItemsProcessorImpl implements ItemsProcessor {
   private lastTimestamp: number;
 
   constructor(
-    @Inject(() => ItemTransformerImpl)
-    private readonly itemTransformer: ItemTransformer,
     @Inject(() => ItemMapperImpl)
     private readonly itemMapper: ItemMapper,
     @InjectRepository(Item)
     private readonly itemRepository: Repository<Item>
   ) {}
 
-  public async processItemsFromExchange(): Promise<void> {
+  public async processItemsFromExchange(autoRetry: boolean): Promise<void> {
     const itemsUrl: string = config.get('api').items;
     let data: ItemsExchangeResult;
 
@@ -39,8 +37,10 @@ export class ExternalItemsProcessorImpl implements ExternalItemsProcessor {
       data = response.data;
     } catch (err) {
       const retryIntervalInMinutes = 5;
-      console.error(`Items processor: external API failure ${err.message}. Retrying in ${retryIntervalInMinutes} minutes.`);
-      this.scheduleProcessing(retryIntervalInMinutes);
+      console.error(`Items processor: external API failure ${err.message}`);
+      if (autoRetry) {
+        this.scheduleProcessing(retryIntervalInMinutes);
+      }
       return;
     }
 
@@ -51,7 +51,8 @@ export class ExternalItemsProcessorImpl implements ExternalItemsProcessor {
 
     this.lastTimestamp = data.timestamp;
 
-    const itemsDto: ItemDto[] = data.items.map(item => this.itemTransformer.toItemDto(item));
+    // dto should be validated over defined decorators after transformation
+    const itemsDto: ItemDto[] = data.items.map(item => plainToClass(ItemDto, item));
     const items: Item[] = itemsDto.map(dto => this.itemMapper.fromDtoToDomain(dto));
 
     await this.itemRepository.save(items);
@@ -61,7 +62,7 @@ export class ExternalItemsProcessorImpl implements ExternalItemsProcessor {
 
   private scheduleProcessing(minutes: number): void {
     setTimeout(() => {
-      this.processItemsFromExchange();
+      this.processItemsFromExchange(true);
     }, minutes * 1000 * 60);
   }
 }

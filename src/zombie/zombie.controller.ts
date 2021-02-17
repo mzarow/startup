@@ -7,6 +7,7 @@ import {Zombie} from "./zombie.model";
 import {StatusCodes} from 'http-status-codes';
 import {ItemDto} from "../items/item.dto";
 import {ItemMapper, ItemMapperImpl} from "../items/item.mapper";
+import {TotalPriceResult} from "../exchange-rates/exchange-rate.service";
 
 @JsonController('/zombies')
 export class ZombieController {
@@ -97,5 +98,16 @@ export class ZombieController {
     const items = await this.zombieService.removeItemFromZombie(zombie, itemId);
 
     return items.map(item => this.itemMapper.fromDomainToDto(item));
+  }
+
+  @Get('/:id/total')
+  public async getItemsTotalValue(@Param('id') id: number): Promise<TotalPriceResult[]> {
+    const zombie = await this.zombieService.findOne(id, true);
+
+    if (!zombie) {
+      throw new NotFoundError('Zombie not found');
+    }
+
+    return this.zombieService.getTotalItemsPriceForZombie(zombie);
   }
 }

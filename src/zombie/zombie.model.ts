@@ -6,6 +6,8 @@ export const TABLE_NAME = 'zombies';
 
 @Entity(TABLE_NAME)
 export class Zombie extends BaseEntity {
+  public static MAX_ITEMS_COUNT = 5;
+
   @Column()
   public name: string;
 

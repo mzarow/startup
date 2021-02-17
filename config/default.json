@@ -11,7 +11,8 @@
     "charset": "UTF8_GENERAL_CI"
   },
   "api": {
-    "zombieItems": "http://zombie-items-api.herokuapp.com/api/items"
+    "items": "http://zombie-items-api.herokuapp.com/api/items",
+    "exchangeRates": "http://api.nbp.pl/api/exchangerates/tables/C/today"
   },
   "winston": {
     "filename": "./logs/error.log",

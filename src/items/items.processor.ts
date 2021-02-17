@@ -36,9 +36,9 @@ export class ItemsProcessorImpl implements ItemsProcessor {
       const response = await axios.get(itemsUrl);
       data = response.data;
     } catch (err) {
-      const retryIntervalInMinutes = 5;
       console.error(`Items processor: external API failure ${err.message}`);
       if (autoRetry) {
+        const retryIntervalInMinutes = 5;
         this.scheduleProcessing(retryIntervalInMinutes);
       }
       return;

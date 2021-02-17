@@ -40,9 +40,9 @@ export class ExchangeRatesProcessorImpl implements ExchangeRatesProcessor {
 
       data = response.data[0];
     } catch (err) {
-      const retryIntervalInMinutes = 5;
       console.error(`Items processor: external API failure ${err.message}`);
       if (autoRetry) {
+        const retryIntervalInMinutes = 5;
         this.scheduleProcessing(retryIntervalInMinutes);
       }
       return;

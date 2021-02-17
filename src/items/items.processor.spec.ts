@@ -60,13 +60,14 @@ describe('Items Processor', () => {
         items: [itemDtoFixture]
       };
 
-      sandbox.stub(axios, 'get').resolves({data: apiResponse});
+      const axiosGet = sandbox.stub(axios, 'get').resolves({data: apiResponse});
       itemMapperStub.fromDtoToDomain.returns(itemFixture);
 
       // Act
       await expect(itemsProcessor.processItemsFromExchange(false)).to.eventually.be.fulfilled;
 
       // Assert
+      expect(axiosGet).to.have.been.calledOnceWith(apiConfig.items);
       expect(itemMapperStub.fromDtoToDomain).to.have.been.calledOnceWith(plainToClass(ItemDto, itemDtoFixture));
       expect(itemRepositoryStub.save).to.have.been.calledOnceWith([itemFixture]);
     });

@@ -96,19 +96,19 @@ export class ZombieServiceImpl implements ZombieService {
     return savedZombie.items;
   }
 
+  public async getTotalItemsPriceForZombie(zombie: Zombie): Promise<TotalPriceResult[]> {
+    const totalPriceInPLN: number = zombie.items.reduce((acc, curr) => {
+      return acc + curr.price;
+    }, 0);
+
+    return this.exchangeRateService.getTotalPriceAllCurrencies(totalPriceInPLN);
+  }
+
   private async validateNameUniqueness(name: string): Promise<void> {
     const exists = await this.zombieRepository.findOne({name});
 
     if (exists) {
       throw new HttpError(StatusCodes.CONFLICT, 'Zombie with provided name already exists');
     }
-  }
-
-  getTotalItemsPriceForZombie(zombie: Zombie): Promise<TotalPriceResult[]> {
-    const totalPriceInPLN: number = zombie.items.reduce((acc, curr) => {
-      return acc + curr.price;
-    }, 0);
-
-    return this.exchangeRateService.getTotalPriceAllCurrencies(totalPriceInPLN);
   }
 }
